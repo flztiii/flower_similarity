@@ -14,10 +14,11 @@ from joint_bayesian import *
 from common import *
 
 WEIGHT = "./weights/resnet50_weights_tf_dim_ordering_tf_kernels_notop.h5"
-PCA_TRANS = "./weights/pca_trans.npy"
-A_CON = "./weights/A_con.pkl"
-G_CON = "./weights/G_con.pkl"
+# PCA_TRANS = "./weights/pca_trans.npy"
+# A_CON = "./weights/A_con.pkl"
+# G_CON = "./weights/G_con.pkl"
 TRAIN_PIC_PATH = "./picture/"
+CENTERS = "./weights/centers/"
 
 BETA = np.array([[1,1,1,1,1,1,1],[1,2,2,2,2,2,1],[1,2,3,3,3,2,1],[1,2,3,4,3,2,1],[1,2,3,3,3,2,1],[1,2,2,2,2,2,1],[1,1,1,1,1,1,1]])
 BETA_VALUE = np.sum(BETA)
@@ -33,15 +34,10 @@ class FlowerSimilarityJudgement:
         x = image.img_to_array(img)
         x = np.expand_dims(x, axis=0)
         x = preprocess_input(x)
-        return self.model.predict(x)[0]
+        return self.model.predict(x).reshape((100352))
 
-    def calcDistance(self, feature_1, feature_2):
-        result = 0.0
-        width, height, n_dim = feature_1.shape
-        for i in range(0, width):
-            for j in range(0, height):
-                result = result + float(BETA[i][j])/float(BETA_VALUE) * np.dot(feature_1[i][j], feature_2[i][j].T)/(np.linalg.norm(feature_1[i][j]) * np.linalg.norm(feature_2[i][j]))
-        return result
+    def calcCosDistance(self, feature_1, feature_2):
+        return np.dot(feature_1, feature_2.T)/(np.linalg.norm(feature_1) * np.linalg.norm(feature_2))
 
     # 训练
     def train(self):
@@ -64,12 +60,28 @@ class FlowerSimilarityJudgement:
         # labels = np.array(labels)
         # # 训练联合贝叶斯模型
         # self.trainBayesian(features, labels)
+        classes_dir = os.listdir(TRAIN_PIC_PATH)
+        for i in range(0, len(classes_dir)):
+            feature = np.zeros((100352))
+            count = 0
+            path_dir = TRAIN_PIC_PATH + classes_dir[i] + "/"
+            images_path = os.listdir(path_dir)
+            for image_path in images_path:
+                image_path = path_dir + image_path
+                feature = feature + self.featureExtraction(image_path)
+                count = count + 1
+            feature = feature/float(count)
+            np.save(CENTERS+classes_dir[i]+".npy", feature)
         return
 
-    # 测试前的准备
+    # 测试前的准备,获取中心
     def testPrepare(self, raw_image):
         # self.loadBayesianModel()
         self.raw_image_feature = self.featureExtraction(raw_image)
+        for center_feature_path in os.listdir(CENTERS):
+            center_feature_path = CENTERS + center_feature_path
+            center_feature = np.load(center_feature_path)
+            score = 
         # self.raw_image_feature = np.dot(self.raw_image_feature, self.trans_matrix)
         return
 
@@ -78,8 +90,7 @@ class FlowerSimilarityJudgement:
         feature = self.featureExtraction(image_url)
         # feature = np.dot(feature, self.trans_matrix)
         # result = Verify(self.A, self.G, self.raw_image_feature, feature)
-        # result = np.dot(self.raw_image_feature, feature.T)/(np.linalg.norm(self.raw_image_feature) * np.linalg.norm(feature))
-        result = self.calcDistance(self.raw_image_feature, feature)
+        result = np.dot(self.raw_image_feature, feature.T)/(np.linalg.norm(self.raw_image_feature) * np.linalg.norm(feature))
         return result
 
     # # 由数据集提取PCA变换矩阵
