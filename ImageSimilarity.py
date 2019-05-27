@@ -78,10 +78,15 @@ class FlowerSimilarityJudgement:
     def testPrepare(self, raw_image):
         # self.loadBayesianModel()
         self.raw_image_feature = self.featureExtraction(raw_image)
+        max_score = 0.0
         for center_feature_path in os.listdir(CENTERS):
             center_feature_path = CENTERS + center_feature_path
             center_feature = np.load(center_feature_path)
-            score = 
+            score = self.calcCosDistance(self.raw_image_feature, center_feature)
+            print(center_feature_path, score)
+            if score > max_score:
+                max_score = score
+                self.raw_center_feature = center_feature
         # self.raw_image_feature = np.dot(self.raw_image_feature, self.trans_matrix)
         return
 
@@ -90,7 +95,7 @@ class FlowerSimilarityJudgement:
         feature = self.featureExtraction(image_url)
         # feature = np.dot(feature, self.trans_matrix)
         # result = Verify(self.A, self.G, self.raw_image_feature, feature)
-        result = np.dot(self.raw_image_feature, feature.T)/(np.linalg.norm(self.raw_image_feature) * np.linalg.norm(feature))
+        result = self.calcCosDistance(self.raw_center_feature, feature)
         return result
 
     # # 由数据集提取PCA变换矩阵
