@@ -2,3 +2,7 @@
 weights/
 
 picture/
+
+dataset/
+
+__pycache__/

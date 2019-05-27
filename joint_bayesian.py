@@ -12,7 +12,7 @@ from sklearn.externals import joblib
 def JointBayesian_Train(trainingset, label, fold = "./"):
     if fold[-1] != '/':
         fold += '/'
-    print trainingset.shape
+    print(trainingset.shape)
     # the total num of image
     n_image = len(label)
     # the dim of features
@@ -38,7 +38,7 @@ def JointBayesian_Train(trainingset, label, fold = "./"):
         if numberBuff[n_same_label] == 0:
             numberBuff[n_same_label] = 1
             maxNumberInOneClass = max(maxNumberInOneClass, n_same_label)
-    print "prepare done, maxNumberInOneClass=", maxNumberInOneClass
+    print("prepare done, maxNumberInOneClass=", maxNumberInOneClass)
 
     u  = np.zeros([n_dim, n_class])
     ep = np.zeros([n_dim, withinCount])
@@ -86,7 +86,7 @@ def JointBayesian_Train(trainingset, label, fold = "./"):
         convergence = np.linalg.norm(Sw-oldSw)/np.linalg.norm(Sw)
         print_info("Iterations-" + str(l) + ": "+ str(convergence))
         if convergence<1e-8:
-            print "Convergence: ", l, convergence
+            print("Convergence: ", l, convergence)
             break;
         oldSw=Sw
 
@@ -153,18 +153,18 @@ def excute_performance(file_path, t_s=-8, t_e=10, t_step=1):
         result = pickle.load(f)
         dist = result['distance']
         y    = result['label']
-        print y
-        print "test size: ", y.shape
-        print "negative size: ", y[y==0].shape
-        print "postive size: ",  y[y==1].shape
+        print(y)
+        print("test size: ", y.shape)
+        print("negative size: ", y[y==0].shape)
+        print("postive size: ",  y[y==1].shape)
 
         draw_list = []
         while (t_s < t_e):
             pre = dist >= t_s
             y = (y==1)
             report = metrics.classification_report(y_true=y, y_pred=pre)
-            print "threshold: ", t_s
-            print report
+            print("threshold: ", t_s)
+            print(report)
 
             report_result = report_format(report)
             draw_list.append([report_result, t_s])

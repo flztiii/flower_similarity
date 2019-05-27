@@ -9,18 +9,18 @@ def get_time_str():
     return time.strftime("%Y-%m-%d, %H:%M:%S ", time.localtime((time.time()) ))
 
 def print_info(msg):
-    print get_time_str(), msg 
+    print(get_time_str(), msg) 
 
 
 # saving data into pkl
 def data_to_pkl(data, file_path):
-    print "Saving data to file(%s). "%(file_path)
+    print("Saving data to file(%s). "%(file_path))
 
-    with open(file_path, "w") as f:
+    with open(file_path, "wb") as f:
         pickle.dump(data,f)
         return True
 
-    print "Occur Error while saving..."
+    print("Occur Error while saving...")
     return False
 
 def read_pkl(file_path):
@@ -36,7 +36,7 @@ def save_draw_file(draw_list):
             for c in r:
                 st += str(c) + " "
         st += "\n"
-    with open("draw_file.txt", "w") as f:
+    with open("draw_file.txt", "wb") as f:
         f.write(st)
 
 
