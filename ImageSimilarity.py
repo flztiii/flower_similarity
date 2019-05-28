@@ -9,9 +9,6 @@ import cv2
 import os
 import shutil
 import re
-import pca
-from joint_bayesian import *
-from common import *
 
 WEIGHT = "./weights/resnet50_weights_tf_dim_ordering_tf_kernels_notop.h5"
 TRAIN_PIC_PATH = "./picture/"
