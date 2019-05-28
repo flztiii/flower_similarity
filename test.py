@@ -9,5 +9,6 @@ if __name__ == "__main__":
     for image in dataset:
         image = "./picture/chrysanthemum/" + image
         score = judgement.test(image)
-        if score > 0.58
+        if score > 0.58:
+            cv2.imshow()
         
