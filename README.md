@@ -16,8 +16,8 @@ refer to the code
 
 # trainning
 
-'python3 ImageSimilarity.py'
+`python3 ImageSimilarity.py`
 
 # test
 
-'python3 test.py'
+`python3 test.py`
