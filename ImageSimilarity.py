@@ -45,6 +45,7 @@ class FlowerSimilarityJudgement:
                 image_path = path_dir + image_path
                 feature = feature + self.featureExtraction(image_path)
                 count = count + 1
+                shutil.copy(image_path, "./dataset/" + classes_dir[i] + "_" + str(count) + image_path[image_path.find(".", 1):])
             feature = feature/float(count)
             np.save(CENTERS+classes_dir[i]+".npy", feature)
         return
